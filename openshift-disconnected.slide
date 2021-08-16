@@ -14,5 +14,31 @@ mavazque@redhat.com
 
 .image assets/img/zelda.jpg 400 600
 
-Be sure you check the documentation before to start dealing with them!
+Be sure you check the documentation before to start dealing with a real one!
+.background assets/img/background.png
+
+
+* Index
+
+- Pre-requisites
+
+    - The Helper node
+    - Kernel Parameters
+    - Additional Services: DHCP, DNS, etc...
+    - Container Image Sync
+    - Download RHCOS Resources
+    - Networking
+    - CAs and ICSPs
+
+- OCP Deployment
+    
+    - UPI/IPI
+    - Deployment Customization
+
+- Filling the Marketplace 
+- Openshift and Operators Life-cycle
+
+
+
+
 .background assets/img/background.png
