@@ -1,0 +1,18 @@
+Openshift in a Disconnected world
+21 Sep 2021
+Tags: Openshift, Disconnected, IPv6
+
+Juan Manuel Parrilla
+Principal Software Engineer, Red Hat
+jparrill@redhat.com
+
+Mario Vazquez Cebrian
+Principal Software Engineer, Red Hat
+mavazque@redhat.com
+
+* The disconnected environments are dark!
+
+.image assets/img/zelda.jpg 400 600
+
+Be sure you check the documentation before to start dealing with them!
+.background assets/img/background.png
