@@ -10,13 +10,14 @@ Mario Vazquez Cebrian
 Principal Software Engineer, Red Hat
 mavazque@redhat.com
 
-* The disconnected environments are dark!
+* The disconnected environments are dark places!
 
 .image assets/img/zelda.jpg 400 600
 
 Be sure you check the documentation before to start dealing with a real one!
 .background assets/img/background.png
 
+########
 
 * Index
 
@@ -38,7 +39,80 @@ Be sure you check the documentation before to start dealing with a real one!
 - Filling the Marketplace 
 - Openshift and Operators Life-cycle
 
+.background assets/img/background.png
 
-
+########
+* Pre-requisites
 
 .background assets/img/background.png
+
+########
+* Pre-requisites: Helper Node
+
+Basically all pre-requisites comes from the *helper* *node*. We call a helper node to that one which gives the basic services to that environment, like DNS, DHCP, HTTPD, etc... So let's create a list of services necessary to make this work:
+
+.image assets/img/pre-reqs.png 370 690
+
+.background assets/img/background.png
+
+########
+* Pre-requisites: Helper Node
+We can classify them as you see in the diagram:
+
+- Mandatory
+- Mandatory for Disconnected
+- Mandatory for IPv6
+- Optional Components
+
+.background assets/img/background.png
+
+########
+* Pre-requisites: Helper Node
+
+- As *DNS* and *DHCP* we will use `Dnsmasq` software because it can hold both configs.
+- For *NTP* we will use `Chrony`
+- For *Internal* *Registry* we will use a podman container with a basic image registry
+- For the *HTTP* server we will use `HTTPD`
+- For RA's and route spreading on the IPv6 environment we will use RaDVD
+- To allow access to the Openshift Console and the BMC's we will have an *HAProxy* that makes the IPv4>IPv6 translation
+
+These are the basic components on the Helper Node.
+
+.background assets/img/background.png
+
+########
+* Pre-requisites: Kernel Parameters
+
+Another important things to make sure the services on the Helper Node works fine, we need to add these config to the Kernel:
+
+    # Enable IPv6 Forwading for all interfaces
+    net.ipv6.conf.all.forwarding=1
+    
+    # Accept RA's even if forwarding is enabled
+    net.ipv6.conf.all.accept_ra=2
+    
+    # Reverse Path not validated
+    net.ipv4.conf.all.rp_filter=0
+    
+    # Disable IPv6 Loopback config
+    net.ipv6.conf.lo.disable_ipv6=0
+
+.link https://sysctl-explorer.net
+
+.background assets/img/background.png
+########
+* Pre-requisites
+
+.background assets/img/background.png
+
+########
+* Pre-requisites
+
+.background assets/img/background.png
+
+########
+* Pre-requisites
+
+.background assets/img/background.png
+
+########
