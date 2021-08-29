@@ -101,17 +101,40 @@ Another important things to make sure the services on the Helper Node works fine
 
 .background assets/img/background.png
 ########
-* Pre-requisites
+* Pre-requisites: Additional Services
+Firstly we need a couple of mandatory services, they will be DNS and NTP.
+
+- DNS needs to at least resolve the main openshift addresses, which are the Ingress, the API and the api-int, also the OCP master nodes and lastly our helper node. (This last one for the Image Registry.
+- The NTP is also mandatory in a multinode deployment, we usually put a server on the Helper node and allow the network we are on the `chrony.conf`
+- The Pull Secret is to get the proper access to the images for the installation and Image Synchronization process
 
 .background assets/img/background.png
 
 ########
-* Pre-requisites
+* Pre-requisites: Image Sync
 
+To start the image synchronization for the OCP installation it's quite easy, we will just need to :
+
+- Create a TLS Certificate for our registry with the proper DNS name (it should be SSL)
+.code assets/src/cert-maker.sh /^host/,/htpasswd/
 .background assets/img/background.png
 
 ########
-* Pre-requisites
+* Pre-requisites: Image Sync
+- Start the Image Registry in local
+.code assets/src/start-registry.sh /^podman/,/docker/
+
+> Apart from the desired configuration for your registry ensure the compatibility `schema1` it's enabled
+.background assets/img/background.png
+
+########
+* Pre-requisites: Image Sync
+
+- Download the official oc client and fill the script vairables 
+.code assets/src/release-sync-full.sh /^# Variables/,/NO/
+
+- Now execute the synchronization:
+.code assets/src/release-sync-full.sh /^*oc adm/,/--to-release-image/
 
 .background assets/img/background.png
 
