@@ -30,7 +30,7 @@ Be sure you check the documentation before to start dealing with a real one!
     - Download RHCOS Resources
     - Networking
     - The install-config file
-    - CAs and ICSPs
+    - CatalogSources and ICSPs
 
 - OCP Deployment
     
@@ -196,10 +196,186 @@ The networking part I think it's a bit tricky, because you need to know how IPv6
 Important points to discuss:
 
 - DNSMASQ and RAs
-- IPv6 forwarding on the OS
-- SLAAC Addresses
+- IPv6 and SLAAC Addresses
 - PXE vs VirtualMedia
 - BootMode: UEFI vs Legacy
+
+
+.background assets/img/background.png
+########
+
+* DNSMASQ and RAs 
+
+- Configure your network to send the RAs from RaDVD instead use the dnsmasq native one
+- `AdvOnLink` `on` and `AdvRouterAddr` `on` are mandatory options if not, NM will get confused
+- use *ndptool* to to debug the RAs sent over the network
+
+    ndptool mon -i 'baremetal.154' -t ra
+
+.background assets/img/background.png
+########
+
+* IPv6 and SLAAC Addresses 
+
+- SLAAC addresses are the devil if you are not the network admin 
+- Check if it's enabled or not with `ndptool`
+.image assets/img/slaac_trace.png 200 950
+- The issue here is, network devices will be always faster than a server so slaac will be configured first
+- The routes and the dns resolution will be affected.
+
+.background assets/img/background.png
+########
+
+* PXE vs VirtualMedia 
+
+- PXE will involve a more complex net config and usually are not allowed in all companies
+- This method involve L2 on the provisioning network
+- Virtualmedia is the most easy way always that your BMC servers has redfish configured (we recommend Dell or HP)
+- This method only will need L3 and does not need provisinoning network.
+
+.background assets/img/background.png
+########
+
+* UEFI vs Legacy 
+
+- This mainly affects to the drives on the node where OCP will be deployed
+- If they are NVMe you need UEFI
+- In other case you can choose Legacy but also works with UEFI
+- UEFI boot should has secure boot disabled
+
+.background assets/img/background.png
+########
+
+* The Install Config file
+
+.background assets/img/background.png
+########
+
+* The Install Config file
+
+If you are deploying Openshift this is one of the main pieces let's check the relevant fields inside
+.code assets/src/install-config.yaml /^networking/,/baremetal/
+
+.background assets/img/background.png
+########
+
+* The Install Config file
+
+.code assets/src/install-config.yaml /^platform/,/hardwareProfile/
+
+.background assets/img/background.png
+########
+
+* The Install Config file
+
+.code assets/src/install-config.yaml /^imageContentSources:/,/source/
+.code assets/src/install-config.yaml /^additionalTrustBundle:/,/  BQAwgYg/
+.code assets/src/install-config.yaml /^pullSecret/,/ssh-rsa/
+
+.background assets/img/background.png
+########
+
+* CatalogSources and ICSPs
+
+.background assets/img/background.png
+########
+
+* CatalogSources
+
+A CatalogSource is a K8s object that allow the OLM (Operator Lifecycle Manager) to consume PackageManifests included on that source.
+
+- Namespaced resources that live on the openshift-marketplace Namespace
+.image assets/img/catalogsource.png 80 1000
+.code assets/src/catalogsource.yaml /name/,/interval/
+
+.background assets/img/background.png
+########
+
+* CatalogSources
+
+The CatalogSource points to an index image which contains a serie of objects that K8s parse as `PackageManifests`
+
+- One CatalogSouce could contain 1 or N packagemanifest
+- You can decide how many include in every CS
+- OCP has 4 included by default pointing to Red Hat registry
+- You can disable them in case of disconnected deployments
+- The index image contains a DB whith the data for every PackageManifests included
+
+.image assets/img/packagemanifest.png
+
+.background assets/img/background.png
+########
+
+* CatalogSources
+
+- If you wanna inspect the content of an index, just run it on podman as you see
+.image assets/img/cs-serve.png 50 950
+
+- Then in other terminal use `gprcurl` to check the content:
+.image assets/img/cs-packages.png
+
+You can use `opm` and tool to create you own indexImages and then push it to your internal registry to be consumed for your own CatalogSources.
+
+.background assets/img/background.png
+########
+
+* CatalogSources
+
+- Create the Index Image in local
+    opm index prune --from-index registry.redhat.io/redhat/redhat-operator-index:v4.8 \
+        --packages advanced-cluster-management,local-storage-operator... \
+        --tag bm-cluster-1-hyper.e2e.bos.redhat.com:5000/olm-index/redhat-operator-index:v4.8
+    
+- Push Index image to your internal Registry
+    podman push --tls-verify=false --authfile pull_secret.json \
+        bm-cluster-1-hyper.e2e.bos.redhat.com:5000/olm-index/redhat-operator-index:v4.8 
+
+- Sync the images listed on your Image from the source registry (RedHat) to your internal Registry
+    oc adm catalog mirror --registry-config=pull_secret.json \ 
+        bm-cluster-1-hyper.e2e.bos.redhat.com:5000/olm-index/redhat-operator-index:v4.8 \
+        bm-cluster-1-hyper.e2e.bos.redhat.com:5000/olm 
+
+.background assets/img/background.png
+########
+
+* The ICSPs
+
+Stands for ImageContentSourcePolicy and the concept behind this object it's easy to understand
+
+- It works at runtime level
+- When crio/podman go to pull an image, it will look at the `/etc/containers/registries.conf` file
+- If the requested image matches with and entry on that file it will go to the mirror in first step
+
+ICSP it's a K8s object that create these entries on the OCP nodes.
+
+The controller that manage this object is the MachineConfig Operator, so make sure you don't have it in degraded state
+
+    oc get mcp
+
+.background assets/img/background.png
+########
+
+* The ICSPs
+
+This is how looks like an ICSP
+.code assets/src/icsp.yaml /apiVersion/,/source/
+
+And the result on the `/etc/containers/registries.conf` file
+.code assets/src/registries.conf /registry/,/bm-cluster-1-hyper.e2e.bos.redhat.com:5000/
+
+.background assets/img/background.png
+########
+
+* The ICSPs
+
+But Warning, you need to know these things:
+
+- If you have the MCO degraded ICSP will not be applied
+- If you modify the OCP Nodes manually at this `registries.conf` file the MCO will enter on degraded state
+- If you decide that you want to modify the node manually, you need to restart kubelet and crio after modify this file to make this work
+- The flag `mirror-by-digest-only` `=` `true` will be exposed on the API on 4.9 and you will be able the modify this directly on the ICSP 
+- You should not include tags on the ICSP
+- You can save some lines puting the namespace instead the whole image
 
 
 .background assets/img/background.png

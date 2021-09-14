@@ -76,6 +76,6 @@ additionalTrustBundle: |
   6Rf1YNZC6XaR2GzJTz8mdiyG4L/cG6um65TigWOjaAOfD5ecei+d0maqmw==
   -----END CERTIFICATE-----
 pullSecret: |
-        {"auths":{"bm-cluster-1-hyper.e2e.bos.redhat.com:5000":{"auth":"a25pOmtuaQ==","email":"john.doe@redhat.com"}}}
+  {"auths":{"bm-cluster-1-hyper.e2e.bos.redhat.com:5000":{"auth":"a25pOmtuaQ==","email":"john.doe@redhat.com"}}}
 sshKey: |
   ssh-rsa AAAAB3NzaC1yc2EAAACFGjqegPtQVtK1rH38ODIXRwCQlmCbClFQCMIR6nUn6wWCv5kcC9An7c9jg5Zjwu9g/umM0hQs1HX4nFGhg6AXyuD6jjbmrugKEO1NTjG9pKB+G6OSbbwrbydyd1ZonbrhTvN1rFSrKA+nKX2bseZDZh4ikBU4CPMpEG/F1AqBMlIyk= kni@bm-cluster-1-hyper.e2e.bos.redhat.com
