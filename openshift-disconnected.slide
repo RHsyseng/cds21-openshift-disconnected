@@ -37,7 +37,6 @@ Be sure you check the documentation before to start dealing with a real one!
     - UPI/IPI
     - Deployment Customization
 
-- Filling the Marketplace 
 - Openshift and Operators Life-cycle
 
 .background assets/img/background.png
@@ -377,6 +376,122 @@ But Warning, you need to know these things:
 - You should not include tags on the ICSP
 - You can save some lines puting the namespace instead the whole image
 
+
+.background assets/img/background.png
+########
+
+* Openshift Deployment
+
+
+.background assets/img/background.png
+########
+
+* Openshift Deployment
+
+There are 2 native types of deployments of Openshift, but both of them have minimum requirements that requires user interaction with the environment:
+
+- Create the proper DNS and DHCP entries
+- Helper node configuration like networking, kernel parameters, etc...
+- Client and Installer extracted from the OCP Release
+- Images download (Qemu and Openstack ones)
+- Prepare BareMetalHost (BMC config if the deployment will be on BM)
+
+From this point we can talk about the specific needs
+
+
+.background assets/img/background.png
+########
+
+* UPI: User Provided Infrastructure
+
+The most flexible way and also the most difficult one. it has some caveats like, you will not be able to automatically create more workers in the cluster, you need to do it manually.
+
+Where the user is responsible of:
+
+- ISO Creation to boot the Bootstrap VM, this method needs to embed the necessary files on the ISO.
+- ISO Creation to boot the VMs or the Baremetal Nodes, you have another option to use, which is based on PXE.
+- Bootstrap VM creation (This VM will bootstrap the deployment creating some basic services like ETCD, CoreDNS, LB...)
+- VM Creation (If the deployment of on top of the VMs) at some point when the bootstrap VM have the things prepared you will need to boot the nodes with a VirtualCD and those will try to configure themselves until they will reach the Bootstrap VM and form a ETCD Cluster.
+
+.background assets/img/background.png
+########
+
+* UPI: User Provided Infrastructure
+
+- The nodes form a ETCD cluster with the Bootstrap VM and then they will continue the deployment process of Openshift.
+- When you see a logtrace on the Bootstrap VM that says something like "Bootstrap process finished", you can delete the VM.
+- The 3 nodes should be smart enough to finish the deployment by themselves.
+- After that you can use the Kubeconfig to access to your cluster.
+
+Here you can find many more detail about how to proceed
+
+.link https://cloud.redhat.com/blog/ask-an-openshift-admin-office-hour-installation-methods-redux Installation Methods Redux
+
+.background assets/img/background.png
+########
+
+* IPI: Installer Provided Infrastructure
+
+Here you will need to download the Installer and the OC client, the best way to do this, is extracting it from the release as we showed before.
+
+This method is one of the easiest ways to deploy Openshift.
+
+- You need to provide a Libvirtd URL to allow the Installer to create the Bootstrap VM
+- You need to provide the provider and the credentials on the `install-config.yaml` file, like vsphere, RHEV, Openstack or even Baremetal
+- If the deployment is disconnected you need to add some extra manifests to the deployment folder, the installer will take care to insert them on the multiple ISOs and that will be reflected on the Ignition files that the ISOs has inside.
+
+.background assets/img/background.png
+########
+
+* IPI: Installer Provided Infrastructure
+
+To deploy IPI is easy as you just execute a small script as this one:
+
+.code assets/src/deploy.sh
+
+- Depend on how did you mirrored the images, you will need the first export or not.
+- We copy the install-config file inside the folder we create because during the initial part of the deployment, that one is consumed and it disspaear.
+- We generate the manifests first, because this allow us to add some manifests like ICSPs or maybe MachineConfig that does something on deployment time.
+
+.background assets/img/background.png
+########
+
+* IPI: Installer Provided Infrastructure
+
+- After that we start the deployment using the last command on debug mode to follow every step.
+- At some point the Bootstrap will be created and that one will boot the Nodes VMs/Baremetal it will depend on which provider did you select.
+- The bootstrap VM will be deleted automatically by the Installer when this is not needed anymore.
+- You will notice when the deployment finishes because a prompt will be shown on the shell, showing the user/password or the location of the Kubeconfig file to be accesible via Web or CLI.
+- If the installer fails because of a timeout no worries, you can still wait a bit more using this command:
+    
+    openshift-baremetal-install --dir $CLUSTER --log-level debug wait-for install-complete
+
+.background assets/img/background.png
+########
+
+* Alternative Methods
+
+There are some alternative methods to have a Cluster, you can use the web UI on the SaaS located on cloud.redhat.com which provide a couple of more methods, but the most easy one is using the Infrastructure Operator that gives you a quick form to fill and then you just need to download an ISO to put into the master nodes and boot them all this installer will be smart enough to finish the deployment by himself.
+
+You have a blogpost from one of our team members: 
+
+.link https://cloud.redhat.com/blog/using-the-openshift-assisted-installer-service-to-deploy-an-openshift-cluster-on-metal-and-vsphere OCP Cluster on vsphere using Assisted Installer
+
+The method using the SaaS also includes the capability to deploy an *SNO* *(Single* *Node* *Openshift)* which the native install methods are not capable yet to deploy (But they will support that in the near future, so stay tunned!)
+
+And the last one for brave people (and for sure this is not supported by Red Hat) you can use Kcli, more info here:
+
+.link https://kcli.readthedocs.io/en/latest/#deploying-kubernetes-openshift-clusters-and-applications-on-top Deploy Openshift 4 using Kcli
+
+.background assets/img/background.png
+########
+
+* Questions?
+
+.background assets/img/background.png
+########
+
+* Thank you 
 
 .background assets/img/background.png
 ########
