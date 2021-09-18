@@ -2,7 +2,7 @@
 
 This is a talk to be delivered in the ContainerDays.io 2021 (Hamburg) and will try to let you understand how Openshift works under Disconnected/IPv6 environments.
 
-- Slides are on [go-talks.appspot.com](https://go-talks.appspot.com/github.com/https://github.com/RHsyseng/cds21-openshift-disconnected/openshift-disconnected.slide)
+- Slides are on [go-talks.appspot.com](https://go-talks.appspot.com/github.com/RHsyseng/cds21-openshift-disconnected/openshift-disconnected.slide)
 
 If you preffer to run locally (you need at least Go installed in your system), just do this:
 
