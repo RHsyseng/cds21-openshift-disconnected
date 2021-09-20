@@ -23,7 +23,7 @@ function download_oc_client() {
 	echo "----> Downloading OC Client"
 	oc adm --registry-config ${PULL_SECRET_JSON} release extract \
 		--command=oc \
-		--from=${OCP_REGISTRY}:${OCP_RELEASE} \
+		--from=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE} \
 		--to .
 
 	if [[ ! -f oc ]]; then
@@ -38,7 +38,7 @@ function download_ipi_installer() {
 	echo "----> Downloading IPI Installer"
 	oc adm --registry-config ${PULL_SECRET_JSON} release extract \
 		--command=openshift-baremetal-install \
-		--from=${OCP_REGISTRY}:${OCP_RELEASE} \
+		--from=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE} \
 		--to .
 
 	if [[ ! -f openshift-baremetal-install ]]; then

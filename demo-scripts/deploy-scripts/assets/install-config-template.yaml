@@ -1,0 +1,110 @@
+apiVersion: v1
+baseDomain: virtual.cluster.lab
+networking:
+  networkType: OVNKubernetes
+  machineCIDR: 2620:52:0:1305::/64 
+  clusterNetwork:
+  - cidr: fd01::/48
+    hostPrefix: 64
+  serviceNetwork:
+  - fd02::/112
+metadata:
+  name: ipv6
+compute:
+- name: worker
+  replicas: 3
+controlPlane:
+  name: master
+  replicas: 3
+  platform:
+    baremetal: {}
+platform:
+  baremetal:
+    externalBridge: "networkipv6"
+    bootstrapProvisioningIP: 2620:52:0:1305::50
+    provisioningNetwork: "Disabled"
+    apiVIP: 2620:52:0:1305::3
+    ingressVIP: 2620:52:0:1305::2
+    bootstrapOSImage: http://[2620:52:0:1305::1]:9000/QEMUIMAGE
+    clusterOSImage: http://[2620:52:0:1305::1]:9000/OSTACKIMAGE
+    hosts:
+      - name: openshift-master-0
+        role: master
+        bmc:
+          address: redfish-virtualmedia://[2620:52:0:1305::1]:8080/redfish/v1/Systems/master0id
+          username: ADMIN
+          password: ADMIN
+          disableCertificateVerification: True
+        bootMACAddress: DE:AD:BE:FF:00:05 
+        # bootMode legacy required, sushy-tools fails with UEFI: https://storyboard.openstack.org/#!/story/2008597
+        bootMode: "legacy"
+        rootDeviceHints:
+          deviceName: "/dev/vda"
+      - name: openshift-master-1
+        role: master
+        bmc:
+          address: redfish-virtualmedia://[2620:52:0:1305::1]:8080/redfish/v1/Systems/master1id
+          username: ADMIN
+          password: ADMIN
+          disableCertificateVerification: True
+        bootMACAddress: DE:AD:BE:FF:00:06
+        bootMode: "legacy"
+        rootDeviceHints:
+          deviceName: "/dev/vda"
+      - name: openshift-master-2
+        role: master
+        bmc:
+          address: redfish-virtualmedia://[2620:52:0:1305::1]:8080/redfish/v1/Systems/master2id
+          username: ADMIN
+          password: ADMIN
+          disableCertificateVerification: True
+        bootMACAddress: DE:AD:BE:FF:00:07
+        bootMode: "legacy"
+        rootDeviceHints:
+          deviceName: "/dev/vda"
+      - name: openshift-worker-0
+        role: master
+        bmc:
+          address: redfish-virtualmedia://[2620:52:0:1305::1]:8080/redfish/v1/Systems/worker0id
+          username: ADMIN
+          password: ADMIN
+          disableCertificateVerification: True
+        bootMACAddress: DE:AD:BE:FF:00:08
+        bootMode: "legacy"
+        rootDeviceHints:
+          deviceName: "/dev/vda"
+      - name: openshift-worker-1
+        role: master
+        bmc:
+          address: redfish-virtualmedia://[2620:52:0:1305::1]:8080/redfish/v1/Systems/worker1id
+          username: ADMIN
+          password: ADMIN
+          disableCertificateVerification: True
+        bootMACAddress: DE:AD:BE:FF:00:09
+        bootMode: "legacy"
+        rootDeviceHints:
+          deviceName: "/dev/vda"
+      - name: openshift-worker-2
+        role: master
+        bmc:
+          address: redfish-virtualmedia://[2620:52:0:1305::1]:8080/redfish/v1/Systems/worker2id
+          username: ADMIN
+          password: ADMIN
+          disableCertificateVerification: True
+        bootMACAddress: DE:AD:BE:FF:00:10
+        bootMode: "legacy"
+        rootDeviceHints:
+          deviceName: "/dev/vda"
+imageContentSources:
+- mirrors:
+  - REGISTRYHOSTNAME:5000/ocp4
+  - REGISTRYHOSTNAME:5000/ocp4/release
+  source: quay.io/openshift-release-dev/ocp-release
+- mirrors:
+  - REGISTRYHOSTNAME:5000/ocp4
+  - REGISTRYHOSTNAME:5000/ocp4/release
+  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+additionalTrustBundle: |
+REGISTRYCA
+pullSecret: 'PULLSECRET' 
+sshKey: 'SSHPUBKEY'
