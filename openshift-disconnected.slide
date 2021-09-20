@@ -1,6 +1,6 @@
-Openshift in a Disconnected world
+OpenShift in a Disconnected world
 21 Sep 2021
-Tags: Openshift, Disconnected, IPv6
+Tags: OpenShift, Disconnected, IPv6
 
 Juan Manuel Parrilla
 Principal Software Engineer, Red Hat
@@ -37,7 +37,7 @@ Be sure you check the documentation before to start dealing with a real one!
     - UPI/IPI
     - Deployment Customization
 
-- Openshift and Operators Life-cycle
+- OpenShift and Operators Life-cycle
 
 .background assets/img/background.png
 
@@ -74,7 +74,7 @@ We can classify them as you see in the diagram:
 - For *Internal* *Registry* we will use a podman container with a basic image registry
 - For the *HTTP* server we will use `HTTPD`
 - For RA's and route spreading on the IPv6 environment we will use RaDVD
-- To allow access to the Openshift Console and the BMC's we will have an *HAProxy* that makes the IPv4>IPv6 translation
+- To allow access to the OpenShift Console and the BMC's we will have an *HAProxy* that makes the IPv4>IPv6 translation
 
 These are the basic components on the Helper Node.
 
@@ -140,9 +140,9 @@ To start the image synchronization for the OCP installation it's quite easy, we 
 ########
 * Pre-requisites: Download RHCOS Resources
 
-Once synced the container images, we need to download the RHCOS images for the OCP deployment, to do that we have a script to help you that extracts the information from the Openshift installer:
+Once synced the container images, we need to download the RHCOS images for the OCP deployment, to do that we have a script to help you that extracts the information from the OpenShift installer:
 
-- Download the Openshift-Baremetal Installer
+- Download the OpenShift-Baremetal Installer
 
 .code assets/src/release-sync-full.sh /^*Downloading IPI/,/--to ./
 This will extract the IPI installer binary from the desired release you wanna install.
@@ -252,7 +252,7 @@ Important points to discuss:
 
 * The Install Config file
 
-If you are deploying Openshift this is one of the main pieces let's check the relevant fields inside
+If you are deploying OpenShift this is one of the main pieces let's check the relevant fields inside
 .code assets/src/install-config.yaml /^networking/,/baremetal/
 
 .background assets/img/background.png
@@ -380,15 +380,15 @@ But Warning, you need to know these things:
 .background assets/img/background.png
 ########
 
-* Openshift Deployment
+* OpenShift Deployment
 
 
 .background assets/img/background.png
 ########
 
-* Openshift Deployment
+* OpenShift Deployment
 
-There are 2 native types of deployments of Openshift, but both of them have minimum requirements that requires user interaction with the environment:
+There are 2 native types of deployments of OpenShift, but both of them have minimum requirements that requires user interaction with the environment:
 
 - Create the proper DNS and DHCP entries
 - Helper node configuration like networking, kernel parameters, etc...
@@ -418,7 +418,7 @@ Where the user is responsible of:
 
 * UPI: User Provided Infrastructure
 
-- The nodes form a ETCD cluster with the Bootstrap VM and then they will continue the deployment process of Openshift.
+- The nodes form a ETCD cluster with the Bootstrap VM and then they will continue the deployment process of OpenShift.
 - When you see a logtrace on the Bootstrap VM that says something like "Bootstrap process finished", you can delete the VM.
 - The 3 nodes should be smart enough to finish the deployment by themselves.
 - After that you can use the Kubeconfig to access to your cluster.
@@ -434,7 +434,7 @@ Here you can find many more detail about how to proceed
 
 Here you will need to download the Installer and the OC client, the best way to do this, is extracting it from the release as we showed before.
 
-This method is one of the easiest ways to deploy Openshift.
+This method is one of the easiest ways to deploy OpenShift.
 
 - You need to provide a Libvirtd URL to allow the Installer to create the Bootstrap VM
 - You need to provide the provider and the credentials on the `install-config.yaml` file, like vsphere, RHEV, Openstack or even Baremetal
@@ -477,11 +477,11 @@ You have a blogpost from one of our team members:
 
 .link https://cloud.redhat.com/blog/using-the-openshift-assisted-installer-service-to-deploy-an-openshift-cluster-on-metal-and-vsphere OCP Cluster on vsphere using Assisted Installer
 
-The method using the SaaS also includes the capability to deploy an *SNO* *(Single* *Node* *Openshift)* which the native install methods are not capable yet to deploy (But they will support that in the near future, so stay tunned!)
+The method using the SaaS also includes the capability to deploy an *SNO* *(Single* *Node* *OpenShift)* which the native install methods are not capable yet to deploy (But they will support that in the near future, so stay tunned!)
 
 And the last one for brave people (and for sure this is not supported by Red Hat) you can use Kcli, more info here:
 
-.link https://kcli.readthedocs.io/en/latest/#deploying-kubernetes-openshift-clusters-and-applications-on-top Deploy Openshift 4 using Kcli
+.link https://kcli.readthedocs.io/en/latest/#deploying-kubernetes-openshift-clusters-and-applications-on-top Deploy OpenShift 4 using Kcli
 
 .background assets/img/background.png
 ########
