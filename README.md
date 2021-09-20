@@ -1,6 +1,6 @@
-# Openshift in a Disconnected/IPv6 world
+# OpenShift in a Disconnected/IPv6 world
 
-This is a talk to be delivered in the ContainerDays.io 2021 (Hamburg) and will try to let you understand how Openshift works under Disconnected/IPv6 environments.
+This is a talk to be delivered in the ContainerDays.io 2021 (Hamburg) and will try to let you understand how OpenShift works under Disconnected/IPv6 environments.
 
 - Slides are on [go-talks.appspot.com](https://go-talks.appspot.com/github.com/RHsyseng/cds21-openshift-disconnected/openshift-disconnected.slide)
 
