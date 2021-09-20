@@ -6,7 +6,7 @@ TEMP_PATH=${SCRIPTPATH}/temp
 ASSETS_PATH=${SCRIPTPATH}/assets
 LOCAL_SECRET_JSON=${ASSETS_PATH}/pull_secret.json
 
-if [[ -z ${LOCAL_SECRET_JSON} ]]
+if [ ! -f ${LOCAL_SECRET_JSON} ]
 then
   echo "You need to place the pull_secret.json file inside the ${ASSETS_PATH} folder"
   exit 1
