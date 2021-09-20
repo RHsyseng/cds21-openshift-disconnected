@@ -1,4 +1,3 @@
-export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE="bm-cluster-1-hyper.e2e.bos.redhat.com:5000/ocp4:4.8.9-x86_64"
 CLUSTER=mgmt-hub
 rm -rf $CLUSTER
 mkdir -p $CLUSTER/openshift
